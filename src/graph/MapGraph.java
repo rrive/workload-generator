@@ -51,21 +51,20 @@ public class MapGraph {
     }
 
     public void addEdge(String v1, String v2, int code, Weight w) {
-        areVertices(v1, v2);
-        Edge edge = new Edge(v1, v2, w);
-        TreeSet<Edge> edges = graph.get(v1).get(code);
+        String opId1 = Vertex.isVertexId(v1) ? vertices.get(v1).getOpId() : v1;
+        println("v2 " + v2);
+        String opId2 = Vertex.isVertexId(v2) ? vertices.get(v2).getOpId() : v2;
+        areVertices(opId1, opId2);
+        Edge edge = new Edge(opId1, opId2, w);
+        TreeSet<Edge> edges = graph.get(opId1).get(code);
         if (edges == null)
             edges = new TreeSet<>(Comparator.naturalOrder());
         edges.add(edge);
-        graph.get(v1).put(code, edges);
-    }
-
-    public void addWeight(String v1, String v2, byte weight) {
-
+        graph.get(opId1).put(code, edges);
     }
 
     public String getNextVertex(String v, int code) {
-        int r = random.nextInt(101);
+        int r = random.nextInt(100);
         println("Random number: " + r);
         TreeSet<Edge> edges = graph.get(v).get(code);
         if (edges != null)
@@ -90,6 +89,5 @@ public class MapGraph {
     public String toString() {
         return graph.toString();
     }
-
 
 }
