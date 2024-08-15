@@ -1,8 +1,9 @@
 package graph;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Weight {
+public class Weight implements Serializable {
 
     private int numTimesRecordedInLogs;
     private List<Short> positionsInLogs;

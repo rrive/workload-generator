@@ -1,10 +1,11 @@
 package graph;
 
+import java.io.Serializable;
 import java.util.*;
 
 import static util.SimpleLog.println;
 
-public class MapGraph {
+public class MapGraph implements Serializable {
 
     private Random random;
 
@@ -52,7 +53,6 @@ public class MapGraph {
 
     public void addEdge(String v1, String v2, int code, Weight w) {
         String opId1 = Vertex.isVertexId(v1) ? vertices.get(v1).getOpId() : v1;
-        println("v2 " + v2);
         String opId2 = Vertex.isVertexId(v2) ? vertices.get(v2).getOpId() : v2;
         areVertices(opId1, opId2);
         Edge edge = new Edge(opId1, opId2, w);
@@ -65,13 +65,15 @@ public class MapGraph {
 
     public String getNextVertex(String v, int code) {
         int r = random.nextInt(100);
-        println("Random number: " + r);
-        TreeSet<Edge> edges = graph.get(v).get(code);
+        //println("Random number: " + r);
+        Map<Integer, TreeSet<Edge>> vertexInfo = graph.get(v);
+        if (vertexInfo == null) return null;
+        TreeSet<Edge> edges = vertexInfo.get(code);
         if (edges != null)
             for (Edge edge : edges) {
-                println(edge.toString());
+                //println(edge.toString());
                 if (r <= edge.getWeight().getWeight()) {
-                    println("random " + r+ " <= " + edge.getWeight().getWeight() + " weight");
+                    //println("random " + r+ " <= " + edge.getWeight().getWeight() + " weight");
                     return edge.getDestination();
                 }
                 r -= edge.getWeight().getWeight();

@@ -1,8 +1,9 @@
 package graph;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
-public class Vertex {
+public class Vertex implements Serializable {
 
     private static final String VERTEX_ID_PATTERN = "(POST|GET|PUT|PATCH|DELETE)\\s(\\S+)";
     private static final Pattern pattern = Pattern.compile(VERTEX_ID_PATTERN);
@@ -34,7 +35,7 @@ public class Vertex {
         return vertexId;
     }
 
-    // return tru if the parameter v matches the pattern of a vertex id, else false.
+    // return true if the parameter v matches the pattern of a vertex id, else false.
     public static boolean isVertexId(String v) {
         return pattern.matcher(v).matches();
     }

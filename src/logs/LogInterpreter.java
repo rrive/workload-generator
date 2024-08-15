@@ -37,6 +37,9 @@ public class LogInterpreter {
         clients = readFile(clientsPath);
     }
 
+    /* Reads access log file and stores each clients log in separate
+     To keep causality of operations
+     */
     public void interpret() {
         try {
             List<String> lines = readFile(path);
@@ -67,16 +70,16 @@ public class LogInterpreter {
 
     /*
         This operation handles the logic of the creation of the edges of the workload graph.
-        The log file is expected to exhibit a sequential execution of the application and that
-        every line represents a request or a response, more complex files are not supported here.
+        The log file is expected to exhibit a sequential execution of the application and
+        every line represents a request or a response, more complex logs are not supported here.
         This means that if line n is a request line n+1 will be the response of that request.
         There is an exception case, where a request is made by one of the servers, which
         leads to having request and response lines between a client request and the response
         to the client.
-        Examples: Client = A, Servers = S1 and S2, -> = request and response.
+        Examples: Note: Client = A, Servers = S1 and S2, -> = request and response.
         A -> S1 -> A (i.e. client A requests an op to S1 and S1 returns the response)
         A -> S1 -> S2 -> S1 -> A (i.e. client A requests an op to the server S1, the server S1 requests
-                                       something from S2, that responds to S1 and S1 sends the final
+                                       something from S2 that responds to S1 and S1 sends the final
                                        response to A)
      */
     private void handleSequentialLogs(List<LogEntry> lines) throws IllegalArgumentException  {
@@ -96,7 +99,7 @@ public class LogInterpreter {
             }
             previousEntry = succeedingEntry;
         }
-        println("Map: " + numberOfTimesEdgesOccurred.toString());
+        //println("Map: " + numberOfTimesEdgesOccurred.toString());
     }
 
     public void fillGraph(MapGraph graph) {
@@ -108,7 +111,7 @@ public class LogInterpreter {
                 for (String nextVertexId : map2.keySet()) {
                     int weight = (int) Math.round((double) map2.get(nextVertexId) / total * 100);
                     graph.addEdge(vertexId, nextVertexId, status, new Weight((byte) weight));
-                    println("Edge: " + vertexId + ", status:" + status + " -> " + nextVertexId + " has weight: " + weight);
+                    //println("Edge: " + vertexId + ", status:" + status + " -> " + nextVertexId + " has weight: " + weight);
                 }
             }
         }

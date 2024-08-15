@@ -2,12 +2,13 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import graph.*;
 import io.swagger.v3.oas.annotations.Operation;
-import logs.Reader;
+import logs.LogInterpreter;
 
 import javax.ws.rs.*;
 
@@ -16,8 +17,9 @@ import static util.SimpleLog.*;
 
 public class Main {
 
-    // TODO: LOGS_PATH should be used as an arg of the main method.
+    // TODO: LOGS_PATH should be used as an arg of the main method and we should be able to use more than one file.
     private static final String LOGS_PATH = "../fct/sd/sd2324-proj-main/sd2324-tp1/logs/access.log";
+    private static final String LOCAL_LOGS_PATH = "access.log";
     private static final String SPECIFICATION_PATH = "src/specification/";
     private static final String JEPREST_BASE_PATH = "JepRest/" + SPECIFICATION_PATH;
     private static final String JEPREST_ANNOTATIONS = "custom_annotations";
@@ -87,7 +89,7 @@ public class Main {
             String basePath = basePathAnnotation != null ? basePathAnnotation.value() : "";
             for (Method method : interface_.getMethods()) {
                 Vertex vertex = generateVertex(method, basePath);
-                println(vertex.toString());
+                //println(vertex.toString());
                 if (vertex.getOpId() != null)
                     vertices.add(vertex);
             }
@@ -100,12 +102,12 @@ public class Main {
         return addServicesInterfacesVertices(projectName);
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, NoSuchFieldException {
         if(args.length < 2){
-            println("  usage: <project directory path> <project name>");
+            println("  usage: <project directory path> <project name>\n");
             println("  notes: <project directory path> = if using JepREST \"path/to/JepREST\", else \"path/to/project/services/interfaces\"\n" +
                     "                   <project name> = project name (╯°□°）╯︵ ┻━┻");
-            println("example: ../JepREST sd");
+            println("  \nexample: ../JepREST sd");
             System.exit(1);
         }
         String projectDirectory = args[0];
@@ -120,30 +122,24 @@ public class Main {
         projectDirectory += projectName + "/";
         copyProjectInterfaces(projectDirectory, projectName);
 
-        Reader reader = new Reader(LOGS_PATH);
-        reader.read();
-
-        /*MapGraph graph;
+        // Start class that will interpret the log file
+        LogInterpreter logInterpreter = new LogInterpreter(LOGS_PATH);
+        // Interpret each log line giving it meaning
+        logInterpreter.interpret();
+        MapGraph graph;
         try {
             graph = generateGraphFromInterfaces(projectName);
+            // After knowing everything from the log, pass that info to the graph
+            logInterpreter.fillGraph(graph);
+            println("\n{[***]} \u001B[47m \u001B[30mWorkload Generator Graph \u001B[0m {[***]}\n");
             println(graph.toString());
-            graph.addEdge("createUser", "getUser", 200, new Weight((byte) 40));
-            graph.addEdge("createUser", "updateUser", 200, new Weight((byte) 60));
-            graph.addEdge("getUser", "updateUser", 200, new Weight((byte) 20));
-            graph.addEdge("getUser", "getUser", 200, new Weight((byte) 80));
-            println(graph.toString());
-            println(graph.getNextVertex("getUser", 200));
+            storeObject("workload-graph.dat", graph);
         } catch (ClassNotFoundException | IOException e) {
             printError(e);
-        }*/
+        }
 
 
 
-
-
-
-
-        // TODO: Read logs to generate edges and weight
 
     }
 

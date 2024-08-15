@@ -1,21 +1,22 @@
 package util;
 
+import graph.MapGraph;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.io.ObjectOutputStream;
+import java.nio.file.Paths;
+import java.util.*;
 
-import static util.Time.sleep;
 
 public class Files {
 
-    public static void copyDirectory(String sourceDirectory, String destinationDirectory) throws IOException, InterruptedException {
+    public static void copyDirectory(String sourceDirectory, String destinationDirectory) throws IOException {
         File sourceDirectoryFile = getDirectory(sourceDirectory);
         File destinationDirectoryFile = new File(destinationDirectory);
         FileUtils.copyDirectory(sourceDirectoryFile, destinationDirectoryFile);
-        sleep(1);
     }
 
     public static List<String> readFile(String path) throws IOException, NoSuchFieldException {
@@ -51,6 +52,12 @@ public class Files {
             SimpleLog.printError(e, "File \"" + file.getName() + "\" is not a java class.");
         }
         return null;
+    }
+
+    public static void storeObject(String path, MapGraph obj) throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(java.nio.file.Files.newOutputStream(Paths.get(path)))) {
+            oos.writeObject(obj);
+        }
     }
 
 }
