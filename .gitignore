@@ -1,5 +1,6 @@
 ### WorkLoad Generator ###
 src/specification
+access.log
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
