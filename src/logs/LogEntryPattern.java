@@ -7,10 +7,10 @@ public enum LogEntryPattern {
     //       will be improved in the future.
     SIMPLE_REQUEST_PATTERN("\\s*\\[(\\S+):(\\S+|)]\\s+(.+)\\s+-\\s+(POST|GET|PUT|PATCH|DELETE)\\s+(\\S+)\\s+params=\\{(.*)}\\s+query=\\{(.*)}\\s*"),
     REQUEST_PATTERN_NO_BODY(SIMPLE_REQUEST_PATTERN.label + "\\s+headers=\\{(.*)}\\s*"),
-    REQUEST_PATTERN(REQUEST_PATTERN_NO_BODY.label + "\\s+length=([0-9]*)\\s+body=(.*)"),
+    REQUEST_PATTERN(REQUEST_PATTERN_NO_BODY.label + "\\s+body=(.*)"),
     SIMPLE_RESPONSE_PATTERN("\\s*\\[(\\S+):(\\S+|)]\\s+(.+)\\s+-\\s+(POST|GET|PUT|PATCH|DELETE)\\s+(\\S+)\\s+([0-9]{3})\\s+params=\\{(.*)}\\s+query=\\{(.*)}\\s*"),
     RESPONSE_PATTERN_NO_BODY(SIMPLE_RESPONSE_PATTERN.label + "\\s+headers=\\{(.*)}\\s*"),
-    RESPONSE_PATTERN(RESPONSE_PATTERN_NO_BODY.label + "\\s+length=([0-9]*)\\s+body=(.*)");
+    RESPONSE_PATTERN(RESPONSE_PATTERN_NO_BODY.label + "\\s+body=(.*)");
 
     public final String label;
     LogEntryPattern(String s) {

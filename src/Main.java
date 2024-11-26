@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import graph.*;
 import io.swagger.v3.oas.annotations.Operation;
@@ -77,7 +75,7 @@ public class Main {
         return vertex;
     }
 
-    private static MapGraph addServicesInterfacesVertices(String projectName) throws ClassNotFoundException {
+    private static Graph addServicesInterfacesVertices(String projectName) throws ClassNotFoundException {
         File[] files = getFiles(SPECIFICATION_PATH + projectName);
         List<Vertex> vertices = new LinkedList<>();
         for (File file : files) {
@@ -94,10 +92,10 @@ public class Main {
                     vertices.add(vertex);
             }
         }
-        return new MapGraph(vertices);
+        return new Graph(vertices);
     }
 
-    private static MapGraph generateGraphFromInterfaces(String projectName)
+    private static Graph generateGraphFromInterfaces(String projectName)
             throws ClassNotFoundException, IOException {
         return addServicesInterfacesVertices(projectName);
     }
@@ -126,7 +124,7 @@ public class Main {
         LogInterpreter logInterpreter = new LogInterpreter(LOGS_PATH);
         // Interpret each log line giving it meaning
         logInterpreter.interpret();
-        MapGraph graph;
+        Graph graph;
         try {
             graph = generateGraphFromInterfaces(projectName);
             // After knowing everything from the log, pass that info to the graph
@@ -137,9 +135,6 @@ public class Main {
         } catch (ClassNotFoundException | IOException e) {
             printError(e);
         }
-
-
-
 
     }
 

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static util.SimpleLog.println;
 
-public class ArrayGraph /*implements Graph*/ {
+public class ArrayGraph {
 
     private byte[][] graph;
     private final Map<String, Integer> index;

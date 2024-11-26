@@ -35,7 +35,7 @@ public class Vertex implements Serializable {
         return vertexId;
     }
 
-    // return true if the parameter v matches the pattern of a vertex id, else false.
+    // return true if the parameter v matches the pattern of an entry id, else false.
     public static boolean isVertexId(String v) {
         return pattern.matcher(v).matches();
     }

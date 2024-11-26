@@ -1,6 +1,7 @@
 package logs;
 
-import graph.MapGraph;
+import graph.Graph;
+import graph.Vertex;
 import graph.Weight;
 
 import java.io.IOException;
@@ -21,6 +22,8 @@ public class LogInterpreter {
     // "POST /users" -> 200 -> "GET /users/{userId}" -> 2
     private Map<String, Map<Integer, Map<String, Integer>>> numberOfTimesEdgesOccurred;
     private Map<String, List<LogEntry>> clientsLog;
+    // "POST /users" -> num times as first operation in logs
+    private Map<String, Integer> starterVertices;
 
     public LogInterpreter(String logPath, String clientsIpPath) throws IOException, NoSuchFieldException {
         init(logPath, clientsIpPath);
@@ -35,10 +38,11 @@ public class LogInterpreter {
         this.clientsLog = new HashMap<>();
         String clientsPath = clientsIpPath == null ? CLIENTS_IP_PATH : clientsIpPath;
         clients = readFile(clientsPath);
+        starterVertices = new HashMap<>();
     }
 
     /* Reads access log file and stores each clients log in separate
-     To keep causality of operations
+       To keep causality of operations
      */
     public void interpret() {
         try {
@@ -82,10 +86,12 @@ public class LogInterpreter {
                                        something from S2 that responds to S1 and S1 sends the final
                                        response to A)
      */
-    private void handleSequentialLogs(List<LogEntry> lines) throws IllegalArgumentException  {
-        if (lines == null) return;
-        LogEntry previousEntry = lines.remove(0);
-        for (LogEntry succeedingEntry : lines) {
+    private void handleSequentialLogs(List<LogEntry> entries) throws IllegalArgumentException  {
+        if (entries == null) return;
+        LogEntry previousEntry = entries.remove(0);
+        starterVertices.putIfAbsent(previousEntry.getVertexId(), 0);
+        starterVertices.compute(previousEntry.getVertexId(), (k, v) -> v + 1);
+        for (LogEntry succeedingEntry : entries) {
             String previousVertexId = previousEntry.getVertexId();
             String succeedingVertexId = succeedingEntry.getVertexId();
             if (previousEntry.isResponse()) { // previousEntry is the response and succeedingEntry is the request
@@ -99,11 +105,17 @@ public class LogInterpreter {
             }
             previousEntry = succeedingEntry;
         }
-        //println("Map: " + numberOfTimesEdgesOccurred.toString());
+        println("Map: " + numberOfTimesEdgesOccurred.toString());
     }
 
-    public void fillGraph(MapGraph graph) {
+    public void fillGraph(Graph graph) {
+        int totalNumExecutions = starterVertices.values().stream().mapToInt(Integer::intValue).sum();
         for (String vertexId : numberOfTimesEdgesOccurred.keySet()) {
+            if (starterVertices.containsKey(vertexId)) {
+                int probOfBeingStartingVertex = (int) Math.round((double) starterVertices.get(vertexId) / totalNumExecutions * 100);
+                graph.addStartingVertex(vertexId, probOfBeingStartingVertex);
+                println(vertexId + " " + probOfBeingStartingVertex);
+            }
             Map<Integer, Map<String, Integer>> map1 = numberOfTimesEdgesOccurred.get(vertexId);
             for (Integer status : map1.keySet()) {
                 Map<String, Integer> map2 = map1.get(status);

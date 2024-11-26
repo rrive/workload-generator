@@ -12,7 +12,7 @@ public class LogEntry {
     private final String line;
     private boolean isRequest;
     private String requestId, clientIP, date, method, endpoint, params, query, headers, body, vertexId;
-    private int status, length;
+    private int status;
     private LogEntryPattern pattern;
 
     //todo: how to represent params and query? params is a MultivaluedMap and query is a string so take a look at that
@@ -45,7 +45,6 @@ public class LogEntry {
             if (hasHeaders(pattern))
                 headers = matcher.group(i++);
             if (hasBody(pattern)) {
-                length = Integer.parseInt(matcher.group(i++));
                 body = matcher.group(i);
             }
             generateVertexId();
@@ -65,7 +64,7 @@ public class LogEntry {
             path = path.replace(value, "{" + key + "}");
         }
         vertexId = method + " " + "/" + path;
-        //println("Generated vertexId = " + vertexId);
+        println("Generated vertexId = " + vertexId);
     }
 
     private boolean isRequest(LogEntryPattern p) throws IllegalArgumentException, NullPointerException {
@@ -152,10 +151,6 @@ public class LogEntry {
         return status;
     }
 
-    public int getLength() {
-        return length;
-    }
-
     public LogEntryPattern getPattern() {
         return pattern;
     }
@@ -177,7 +172,6 @@ public class LogEntry {
                 ", body='" + body + '\'' +
                 ", vertexId='" + vertexId + '\'' +
                 ", status=" + status +
-                ", length=" + length +
                 ", pattern=" + pattern +
                 '}';
     }

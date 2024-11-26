@@ -1,10 +1,9 @@
 package util;
 
-import graph.MapGraph;
+import graph.Graph;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.file.Paths;
@@ -54,7 +53,7 @@ public class Files {
         return null;
     }
 
-    public static void storeObject(String path, MapGraph obj) throws IOException {
+    public static void storeObject(String path, Graph obj) throws IOException {
         try (ObjectOutputStream oos = new ObjectOutputStream(java.nio.file.Files.newOutputStream(Paths.get(path)))) {
             oos.writeObject(obj);
         }
