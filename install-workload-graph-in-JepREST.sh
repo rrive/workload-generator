@@ -1,12 +1,16 @@
 #!/bin/bash
 
+# Compile the project
 mvn clean package
 
-# default path = ../JepREST/JepRest Todo: make it variable
-cp target/WorkloadGenerator-1.0.jar ../JepREST/JepRest
+jepRestPath=$1 # path/to/JepREST directory, e.g., /home/user/JepREST
+projectName=$2 # name of the app being tested, e.g., store, petstore, usersManagement, etc.
 
-# default input = ../JepREST sd Todo: make it variable
-java -cp target/WorkloadGenerator-1.0.jar Main ../JepREST sd
+# Copy the jar file to the JepREST directory, to be able to use the generated graph
+cp target/WorkloadGenerator-1.0.jar $jepRestPath/JepRest
 
-# default path = ../JepREST/JepRest/clojure-code Todo: make it variable
-cp workload-graph.dat ../JepREST/JepRest/clojure-code
+# Generate the workload graph
+java -cp target/WorkloadGenerator-1.0.jar Main $jepRestPath $projectName
+
+# Copy the workload graph to the JepREST directory
+cp workload-graph.dat $jepRestPath/JepRest/clojure-code
