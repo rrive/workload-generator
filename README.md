@@ -3,6 +3,8 @@ This tool generates a Markov chain based on application logs, modeling transitio
 
 This tool was created to be used in the REST API testing tool [JepREST](https://github.com/preguica/JepREST) to request a new operation everytime a client recieves an answer from the SUT.
 
+Click if you want to [know how to run](https://github.com/rrive/workload-generator/tree/master?tab=readme-ov-file#how-to-run) this tool.
+
 ------------
 ## Features
 The tool performs the following tasks:
