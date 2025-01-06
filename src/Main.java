@@ -15,9 +15,6 @@ import static util.SimpleLog.*;
 
 public class Main {
 
-    // TODO: LOGS_PATH should be used as an arg of the main method and we should be able to use more than one file.
-    private static final String LOGS_PATH = "../fct/sd/sd2324-proj-main/sd2324-tp1/logs/access.log";
-    private static final String LOCAL_LOGS_PATH = "access.log";
     private static final String SPECIFICATION_PATH = "src/specification/";
     private static final String JEPREST_BASE_PATH = "JepRest/" + SPECIFICATION_PATH;
     private static final String JEPREST_ANNOTATIONS = "custom_annotations";
@@ -101,15 +98,17 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, NoSuchFieldException {
-        if(args.length < 2){
-            println("  usage: <project directory path> <project name>\n");
+        if(args.length < 3){
+            println("  usage: <project directory path> <project name> <log file path>\n");
             println("  notes: <project directory path> = if using JepREST \"path/to/JepREST\", else \"path/to/project/services/interfaces\"\n" +
-                    "                   <project name> = project name (╯°□°）╯︵ ┻━┻");
-            println("  \nexample: ../JepREST sd");
+                    "                   <project name> = project name (╯°□°）╯︵ ┻━┻" +
+                    "                   <log file path> = \"path/to/logFile\"\n");
+            println("  example: ../JepREST petstore /home/user/petstore/logs/access.log\n");
             System.exit(1);
         }
         String projectDirectory = args[0];
         String projectName = args[1];
+        String logPath = args[2];
         if(projectDirectory.toLowerCase().contains("jeprest")) {
             // Using workload generator for JepREST testing.
             if (projectDirectory.endsWith("/"))
@@ -121,7 +120,7 @@ public class Main {
         copyProjectInterfaces(projectDirectory, projectName);
 
         // Start class that will interpret the log file
-        LogInterpreter logInterpreter = new LogInterpreter(LOGS_PATH);
+        LogInterpreter logInterpreter = new LogInterpreter(logPath);
         // Interpret each log line giving it meaning
         logInterpreter.interpret();
         Graph graph;
