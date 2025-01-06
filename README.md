@@ -64,3 +64,30 @@ The log file should contain the information in the presented order:
 [535032503:192.168.0.2] Mon Sep 02 11:03:08 UTC 2024 - GET users/john 200 params={{userId=[john]}} query={pwd=pswd} headers={Content-Type=[application/json]} body={"userId":"john","pwd":"pwd","email":"johndoe@email.com","displayName":"John Doe"}
 ```
 
+------------
+## How to Run
+
+Running the following command creates the graph and stores it in the JepREST directory so the clients can access the graph and ask for new operations.
+
+```bash
+./install-workload-graph-in-JepREST.sh <path/to/JepREST> <projectName> <path/to/logFile>
+```
+
+### Example
+
+If:
+- JepREST directory is located in ```/home/user```
+- The application beign tested is called ```petstore``` 
+- The log file location is ```/home/user/petstore/logs/access.log```
+
+Then the command is:
+```bash
+./install-workload-graph-in-JepREST.sh home/user/JepREST petstore /home/user/petstore/logs/access.log
+```
+
+
+
+
+
+
+
