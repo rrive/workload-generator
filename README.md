@@ -1,4 +1,4 @@
-# Operation Transitions Graph Generator Tool for REST API Testing
+# Operation Transition Graph Generator Tool for REST API Testing
 This tool generates a Markov chain based on application logs, modeling transitions of operations in a REST API. A graph is created from the logs that represents the actual behavior of users interacting with the application, enabling realistic test case generation. 
 
 This tool was created to be used in the REST API testing tool [JepREST](https://github.com/preguica/JepREST) to request a new operation everytime a client recieves an answer from the SUT.
